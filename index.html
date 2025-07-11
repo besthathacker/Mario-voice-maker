@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Mario Voice Changer</title>
-  <meta name="theme-color" content="#d62828">
+  <meta name="theme-color" content="#d62828" />
   <style>
     body {
       font-family: 'Comic Sans MS', sans-serif;
@@ -14,18 +14,15 @@
       padding: 2em;
       margin: 0;
     }
-
     h1 {
       font-size: 2.5em;
       text-shadow: 3px 3px 0 #000;
       animation: bounce 1.5s infinite;
     }
-
     @keyframes bounce {
       0%, 100% { transform: translateY(0); }
       50% { transform: translateY(-10px); }
     }
-
     button {
       padding: 15px 30px;
       font-size: 1.1em;
@@ -37,38 +34,32 @@
       cursor: pointer;
       transition: transform 0.2s ease;
     }
-
     button:hover {
       background-color: #d62828;
       transform: scale(1.1);
     }
-
     audio, label, input[type=range] {
       margin-top: 1em;
       display: block;
       margin-left: auto;
       margin-right: auto;
     }
-
     #sliderContainer {
       display: none;
       margin: 1em auto;
       width: 300px;
     }
-
     .switch {
       display: inline-block;
       position: relative;
       width: 60px;
       height: 34px;
     }
-
     .switch input {
       opacity: 0;
       width: 0;
       height: 0;
     }
-
     .slider {
       position: absolute;
       cursor: pointer;
@@ -78,7 +69,6 @@
       transition: 0.4s;
       border-radius: 34px;
     }
-
     .slider:before {
       position: absolute;
       content: "";
@@ -88,11 +78,9 @@
       transition: 0.4s;
       border-radius: 50%;
     }
-
     input:checked + .slider {
       background-color: #2196F3;
     }
-
     input:checked + .slider:before {
       transform: translateX(26px);
     }
@@ -103,24 +91,31 @@
   <p>Record your voice and give it a Mario twist!</p>
 
   <label class="switch">
-    <input type="checkbox" id="pitchToggle" onchange="togglePitchSlider()">
+    <input type="checkbox" id="pitchToggle" onchange="togglePitchSlider()" />
     <span class="slider"></span>
   </label>
   <p>Enable Pitch Control</p>
 
   <div id="sliderContainer">
     <label for="pitchSlider">Pitch Shift: <span id="pitchValue">1.8</span>x</label>
-    <input type="range" id="pitchSlider" min="0.5" max="3.0" step="0.1" value="1.8">
+    <input
+      type="range"
+      id="pitchSlider"
+      min="0.5"
+      max="3.0"
+      step="0.1"
+      value="1.8"
+    />
   </div>
 
   <button onclick="startMarioRecording()">🎤 Start Recording</button>
   <button onclick="stopRecording()" id="stopBtn" disabled>🛑 Stop</button>
-  <br>
+  <br />
   <audio id="playback" controls></audio>
-  <br>
-  <a id="downloadLink" style="display:none;" download="mario_voice.mp3">
-    <button>⬇️ Download MP3</button>
-  </a>
+  <br />
+  <a id="downloadLink" style="display:none;" download="mario_voice.mp3"
+    ><button>⬇️ Download MP3</button></a
+  >
 
   <script src="https://unpkg.com/soundtouchjs"></script>
   <script src="https://unpkg.com/lamejs/lame.min.js"></script>
@@ -132,13 +127,17 @@
 
     function togglePitchSlider() {
       const isEnabled = document.getElementById("pitchToggle").checked;
-      document.getElementById("sliderContainer").style.display = isEnabled ? "block" : "none";
+      document.getElementById("sliderContainer").style.display = isEnabled
+        ? "block"
+        : "none";
     }
 
-    document.getElementById("pitchSlider").addEventListener("input", function() {
-      pitchShift = parseFloat(this.value);
-      document.getElementById("pitchValue").textContent = pitchShift.toFixed(1);
-    });
+    document
+      .getElementById("pitchSlider")
+      .addEventListener("input", function () {
+        pitchShift = parseFloat(this.value);
+        document.getElementById("pitchValue").textContent = pitchShift.toFixed(1);
+      });
 
     async function startMarioRecording() {
       mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -169,35 +168,23 @@
       mediaRecorder = new MediaRecorder(dest.stream);
       recordedChunks = [];
 
-      mediaRecorder.ondataavailable = e => {
+      mediaRecorder.ondataavailable = (e) => {
         if (e.data.size > 0) recordedChunks.push(e.data);
       };
 
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-        const fileReader = new FileReader();
+      mediaRecorder.onstop = async () => {
+        const blob = new Blob(recordedChunks, { type: "audio/webm" });
+        const arrayBuffer = await blob.arrayBuffer();
+        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
+        const mp3Blob = encodeMp3(audioBuffer);
+        const url = URL.createObjectURL(mp3Blob);
 
-        fileReader.onload = function () {
-          const wavData = new Uint8Array(fileReader.result);
-          const wavView = new Int16Array(wavData.buffer);
-          const mp3Encoder = new lamejs.Mp3Encoder(1, 44100, 128);
-          const mp3Data = [];
+        const audioElem = document.getElementById("playback");
+        audioElem.src = url;
 
-          for (let i = 0; i < wavView.length; i += 1152) {
-            const chunk = wavView.subarray(i, i + 1152);
-            const mp3buf = mp3Encoder.encodeBuffer(chunk);
-            if (mp3buf.length > 0) mp3Data.push(mp3buf);
-          }
-          mp3Data.push(mp3Encoder.flush());
-          const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
-          const url = URL.createObjectURL(mp3Blob);
-          document.getElementById("playback").src = url;
-          const link = document.getElementById("downloadLink");
-          link.href = url;
-          link.style.display = "inline-block";
-        };
-
-        fileReader.readAsArrayBuffer(blob);
+        const downloadLink = document.getElementById("downloadLink");
+        downloadLink.href = url;
+        downloadLink.style.display = "inline-block";
       };
 
       mediaRecorder.start();
@@ -208,9 +195,39 @@
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
         processor.disconnect();
-        mediaStream.getTracks().forEach(track => track.stop());
+        mediaStream.getTracks().forEach((track) => track.stop());
         document.getElementById("stopBtn").disabled = true;
       }
+    }
+
+    function encodeMp3(audioBuffer) {
+      const mp3encoder = new lamejs.Mp3Encoder(
+        audioBuffer.numberOfChannels,
+        audioBuffer.sampleRate,
+        128
+      );
+      const samples = audioBuffer.getChannelData(0);
+      const mp3Data = [];
+      const sampleBlockSize = 1152;
+      let sampleIndex = 0;
+
+      while (sampleIndex < samples.length) {
+        const sampleChunk = samples.subarray(sampleIndex, sampleIndex + sampleBlockSize);
+        // Convert float samples to 16-bit PCM
+        const buffer = new Int16Array(sampleChunk.length);
+        for (let i = 0; i < sampleChunk.length; i++) {
+          let s = Math.max(-1, Math.min(1, sampleChunk[i]));
+          buffer[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+        }
+        const mp3buf = mp3encoder.encodeBuffer(buffer);
+        if (mp3buf.length > 0) mp3Data.push(mp3buf);
+        sampleIndex += sampleBlockSize;
+      }
+
+      const mp3buf = mp3encoder.flush();
+      if (mp3buf.length > 0) mp3Data.push(mp3buf);
+
+      return new Blob(mp3Data, { type: "audio/mp3" });
     }
   </script>
 </body>

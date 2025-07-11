@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mario Voice Changer</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d62828">
+  <style>
+    
+@font-face {
+  font-family: 'MarioFont';
+  src: url('data:font/ttf;base64,AAEAAAARAQAABAAQR0RFRrRCsIIAAAC...') format('truetype');
+}
+
+
+    body {
+      font-family: 'MarioFont', sans-serif;
+      background-color: #1a1a1a;
+      color: #fff;
+      text-align: center;
+      padding: 2em;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 2.5em;
+      color: #fcbf49;
+      text-shadow: 2px 2px #000;
+    }
+
+    button {
+      padding: 15px 30px;
+      font-size: 1em;
+      background-color: #f77f00;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      margin: 1em;
+    }
+
+    button:hover {
+      background-color: #d62828;
+    }
+
+    audio {
+      margin-top: 1em;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎙 It's-a Me, Mario!</h1>
+  <p>Record your voice and hear it with a Mario-style twist!</p>
+  <button onclick="startRecording()">Start Recording</button>
+  <button onclick="stopRecording()" id="stopBtn" disabled>Stop</button>
+  <br>
+  <audio id="playback" controls></audio>
+  <br>
+  <a id="downloadLink" style="display:none;" download="mario_voice.webm">
+    <button>Download</button>
+  </a>
+
+  <script>
+    let mediaRecorder;
+    let recordedChunks = [];
+    let audioStream;
+    let audioContext, source, destination, pitchNode;
+
+    async function startRecording() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      audioContext = new (window.AudioContext || window.webkitAudioContext)();
+      source = audioContext.createMediaStreamSource(stream);
+      destination = audioContext.createMediaStreamDestination();
+
+      // Pitch shift simulation: speed up playback
+      const gainNode = audioContext.createGain();
+      gainNode.gain.value = 1.1;
+
+      const delayNode = audioContext.createDelay();
+      delayNode.delayTime.value = 0.02;
+
+      source.connect(gainNode);
+      gainNode.connect(delayNode);
+      delayNode.connect(destination);
+
+      mediaRecorder = new MediaRecorder(destination.stream);
+      recordedChunks = [];
+
+      mediaRecorder.ondataavailable = e => {
+        if (e.data.size > 0) recordedChunks.push(e.data);
+      };
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        document.getElementById("playback").src = url;
+        const link = document.getElementById("downloadLink");
+        link.href = url;
+        link.style.display = "inline-block";
+      };
+
+      mediaRecorder.start();
+      document.getElementById("stopBtn").disabled = false;
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state === "recording") {
+        mediaRecorder.stop();
+        document.getElementById("stopBtn").disabled = true;
+      }
+    }
+
+    // PWA install
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js');
+    }
+  </script>
+</body>
+</html>

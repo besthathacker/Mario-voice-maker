@@ -4,18 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Mario Voice Changer</title>
-  <link rel="manifest" href="manifest.json">
   <meta name="theme-color" content="#d62828">
   <style>
-    
-@font-face {
-  font-family: 'MarioFont';
-  src: url('data:font/ttf;base64,AAEAAAARAQAABAAQR0RFRrRCsIIAAAC...') format('truetype');
-}
-
-
     body {
-      font-family: 'MarioFont', sans-serif;
+      font-family: 'Comic Sans MS', sans-serif;
       background: radial-gradient(circle at top, #fcbf49, #d62828);
       color: #fff;
       text-align: center;
@@ -44,7 +36,6 @@
       margin: 1em;
       cursor: pointer;
       transition: transform 0.2s ease;
-      animation: pop 2s infinite ease-in-out;
     }
 
     button:hover {
@@ -52,20 +43,77 @@
       transform: scale(1.1);
     }
 
-    @keyframes pop {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
+    audio, label, input[type=range] {
+      margin-top: 1em;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
     }
 
-    audio {
-      margin-top: 1em;
+    #sliderContainer {
+      display: none;
+      margin: 1em auto;
+      width: 300px;
+    }
+
+    .switch {
+      display: inline-block;
+      position: relative;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0;
+      right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px; width: 26px;
+      left: 4px; bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
     }
   </style>
 </head>
 <body>
   <h1>🎙 It's-a Me, Mario!</h1>
   <p>Record your voice and give it a Mario twist!</p>
-  <button onclick="startRecording()">🎤 Start Recording</button>
+
+  <label class="switch">
+    <input type="checkbox" id="pitchToggle" onchange="togglePitchSlider()">
+    <span class="slider"></span>
+  </label>
+  <p>Enable Pitch Control</p>
+
+  <div id="sliderContainer">
+    <label for="pitchSlider">Pitch Shift: <span id="pitchValue">1.8</span>x</label>
+    <input type="range" id="pitchSlider" min="0.5" max="3.0" step="0.1" value="1.8">
+  </div>
+
+  <button onclick="startMarioRecording()">🎤 Start Recording</button>
   <button onclick="stopRecording()" id="stopBtn" disabled>🛑 Stop</button>
   <br>
   <audio id="playback" controls></audio>
@@ -74,50 +122,82 @@
     <button>⬇️ Download MP3</button>
   </a>
 
-  <script src="https://cdn.jsdelivr.net/npm/lamejs@1.2.0/lame.min.js"></script>
+  <script src="https://unpkg.com/soundtouchjs"></script>
+  <script src="https://unpkg.com/lamejs/lame.min.js"></script>
   <script>
-    let mediaRecorder;
-    let recordedChunks = [];
-    let audioStream;
-    let audioContext, source, destination;
+    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    let mediaStream, mediaRecorder, recordedChunks = [];
+    let processor;
+    let pitchShift = 1.8;
 
-    async function startRecording() {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      audioContext = new (window.AudioContext || window.webkitAudioContext)();
-      source = audioContext.createMediaStreamSource(stream);
-      destination = audioContext.createMediaStreamDestination();
+    function togglePitchSlider() {
+      const isEnabled = document.getElementById("pitchToggle").checked;
+      document.getElementById("sliderContainer").style.display = isEnabled ? "block" : "none";
+    }
 
-      const gainNode = audioContext.createGain();
-      gainNode.gain.value = 1.1;
+    document.getElementById("pitchSlider").addEventListener("input", function() {
+      pitchShift = parseFloat(this.value);
+      document.getElementById("pitchValue").textContent = pitchShift.toFixed(1);
+    });
 
-      const delayNode = audioContext.createDelay();
-      delayNode.delayTime.value = 0.02;
+    async function startMarioRecording() {
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const source = audioContext.createMediaStreamSource(mediaStream);
 
-      source.connect(gainNode);
-      gainNode.connect(delayNode);
-      delayNode.connect(audioContext.destination);
-      delayNode.connect(destination);
+      processor = audioContext.createScriptProcessor(4096, 1, 1);
+      const soundTouch = new soundtouch.SoundTouch(audioContext.sampleRate);
+      soundTouch.pitch = pitchShift;
 
-      mediaRecorder = new MediaRecorder(destination.stream);
+      const filter = new soundtouch.SimpleFilter(
+        new soundtouch.WebAudioBufferSource(source),
+        soundTouch
+      );
+
+      processor.onaudioprocess = function (e) {
+        const output = e.outputBuffer.getChannelData(0);
+        const input = new Float32Array(4096);
+        const filled = filter.extract(input, 4096);
+        for (let i = 0; i < filled; i++) output[i] = input[i];
+      };
+
+      source.connect(processor);
+      processor.connect(audioContext.destination);
+
+      const dest = audioContext.createMediaStreamDestination();
+      processor.connect(dest);
+
+      mediaRecorder = new MediaRecorder(dest.stream);
       recordedChunks = [];
 
       mediaRecorder.ondataavailable = e => {
         if (e.data.size > 0) recordedChunks.push(e.data);
       };
 
-      mediaRecorder.onstop = async () => {
+      mediaRecorder.onstop = () => {
         const blob = new Blob(recordedChunks, { type: 'audio/webm' });
-        const arrayBuffer = await blob.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        const mp3Blob = await encodeMP3(audioBuffer);
+        const fileReader = new FileReader();
 
-        const mp3Url = URL.createObjectURL(mp3Blob);
-        const audio = document.getElementById("playback");
-        const link = document.getElementById("downloadLink");
+        fileReader.onload = function () {
+          const wavData = new Uint8Array(fileReader.result);
+          const wavView = new Int16Array(wavData.buffer);
+          const mp3Encoder = new lamejs.Mp3Encoder(1, 44100, 128);
+          const mp3Data = [];
 
-        audio.src = mp3Url;
-        link.href = mp3Url;
-        link.style.display = "inline-block";
+          for (let i = 0; i < wavView.length; i += 1152) {
+            const chunk = wavView.subarray(i, i + 1152);
+            const mp3buf = mp3Encoder.encodeBuffer(chunk);
+            if (mp3buf.length > 0) mp3Data.push(mp3buf);
+          }
+          mp3Data.push(mp3Encoder.flush());
+          const mp3Blob = new Blob(mp3Data, { type: 'audio/mp3' });
+          const url = URL.createObjectURL(mp3Blob);
+          document.getElementById("playback").src = url;
+          const link = document.getElementById("downloadLink");
+          link.href = url;
+          link.style.display = "inline-block";
+        };
+
+        fileReader.readAsArrayBuffer(blob);
       };
 
       mediaRecorder.start();
@@ -127,33 +207,10 @@
     function stopRecording() {
       if (mediaRecorder && mediaRecorder.state === "recording") {
         mediaRecorder.stop();
+        processor.disconnect();
+        mediaStream.getTracks().forEach(track => track.stop());
         document.getElementById("stopBtn").disabled = true;
       }
-    }
-
-    async function encodeMP3(audioBuffer) {
-      const mp3Encoder = new lamejs.Mp3Encoder(1, audioBuffer.sampleRate, 128);
-      let samples = audioBuffer.getChannelData(0);
-      let mp3Data = [];
-
-      const sampleBlockSize = 1152;
-      for (let i = 0; i < samples.length; i += sampleBlockSize) {
-        let sampleChunk = samples.subarray(i, i + sampleBlockSize);
-        let int16 = new Int16Array(sampleChunk.length);
-        for (let j = 0; j < sampleChunk.length; j++) {
-          int16[j] = sampleChunk[j] * 32767;
-        }
-        let mp3buf = mp3Encoder.encodeBuffer(int16);
-        if (mp3buf.length > 0) mp3Data.push(new Int8Array(mp3buf));
-      }
-      let mp3buf = mp3Encoder.flush();
-      if (mp3buf.length > 0) mp3Data.push(new Int8Array(mp3buf));
-
-      return new Blob(mp3Data, { type: 'audio/mp3' });
-    }
-
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.register('sw.js');
     }
   </script>
 </body>

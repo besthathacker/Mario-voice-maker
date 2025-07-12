@@ -1,165 +1,254 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Mario Sound FX</title>
-  <meta name="theme-color" content="#e60012">
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mario Sound FX</title>
+<meta name="theme-color" content="#e60012" />
 
-  <!-- iOS PWA meta -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" />
+<!-- iOS PWA meta -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" />
 
-  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4">
+<link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" />
 
-  <style>
-    @font-face {
-      font-family: 'PressStart2P';
-      src: url(data:font/woff2;base64,d09GMgABAAAAAAZgABAAAAAAB7wAAAWGAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDFAqDMIIcATYCJAMQCwoABCAFhG0HURvGUBwRCJEEZyTwOEdA6az/e3ce+7znnntMZVRZ9Q...) format('woff2');
-    }
+<style>
+  @font-face {
+    font-family: 'PressStart2P';
+    src: url(data:font/woff2;base64,d09GMgABAAAAAAZgABAAAAAAB7wAAAWGAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDFAqDMIIcATYCJAMQCwoABCAFhG0HURvGUBwRCJEEZyTwOEdA6az/e3ce+7znnntMZVRZ9Q...) format('woff2');
+  }
 
-    body {
-      margin: 0;
-      padding: 20px;
-      background: #ffe600;
-      font-family: 'PressStart2P', cursive;
-      text-align: center;
-      color: #e60012;
-    }
+  body {
+    margin: 0;
+    padding: 20px;
+    background: #ffe600;
+    font-family: 'PressStart2P', cursive;
+    text-align: center;
+    color: #e60012;
+  }
 
-    h1 {
-      font-size: 24px;
-    }
+  h1 {
+    font-size: 24px;
+  }
 
-    button {
-      padding: 15px 25px;
-      font-size: 14px;
-      font-family: 'PressStart2P', cursive;
-      background-color: #ff1e00;
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+  button {
+    padding: 15px 25px;
+    font-size: 14px;
+    font-family: 'PressStart2P', cursive;
+    background-color: #ff1e00;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
 
-    button:hover {
-      background-color: #cc1600;
-    }
+  button:hover {
+    background-color: #cc1600;
+  }
 
-    .toggle {
-      display: block;
-      margin-top: 20px;
-      font-size: 12px;
-    }
+  .toggle {
+    display: block;
+    margin-top: 20px;
+    font-size: 12px;
+  }
 
-    input[type=range] {
-      width: 200px;
-    }
+  input[type=range] {
+    width: 200px;
+  }
 
-    img.icon {
-      width: 100px;
-      margin-top: 20px;
-    }
-  </style>
+  img.icon {
+    width: 100px;
+    margin-top: 20px;
+  }
+
+  #recordStatus {
+    margin-top: 15px;
+    font-family: monospace;
+    font-size: 14px;
+    color: #cc0000;
+  }
+</style>
 </head>
 <body>
 
-  <h1>Mario Sound FX</h1>
-  <img class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" alt="Mario Icon">
-  <br>
-  <button id="soundBtn">🔊 Play Mario Sound</button>
+<h1>Mario Sound FX</h1>
+<img class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" alt="Mario Icon" />
+<br>
+<button id="soundBtn">🔊 Play Mario Sound</button>
 
-  <label class="toggle">
-    <input type="checkbox" id="pitchToggle"> Enable Pitch Slider
-  </label>
-  <input type="range" id="pitchSlider" min="0.5" max="2.0" step="0.1" value="1" disabled>
+<label class="toggle">
+  <input type="checkbox" id="pitchToggle" /> Enable Pitch Slider
+</label>
+<input type="range" id="pitchSlider" min="0.5" max="2.0" step="0.1" value="1" disabled />
 
-  <audio id="marioFX" preload="auto">
-    <source src="data:audio/mp3;base64,SUQzBAAAAAAAIVRJVDIAAAAPAABJdCdzLWEgbWUsIE1hcmlvIQ==" type="audio/mp3">
-  </audio>
+<div style="margin-top: 30px;">
+  <button id="recordBtn">🎙️ Start Recording</button>
+  <button id="stopBtn" disabled>⏹️ Stop Recording</button>
+  <button id="playBtn" disabled>▶️ Play Recording</button>
+  <div id="recordStatus">Not recording</div>
+</div>
 
-  <script>
-    // Create and link manifest.json as a Blob URL
-    const manifestContent = {
-      "name": "Mario Sound FX",
-      "short_name": "MarioFX",
-      "start_url": "./",
-      "display": "standalone",
-      "background_color": "#ffe600",
-      "theme_color": "#e60012",
-      "orientation": "portrait-primary",
-      "icons": [
-        {
-          "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4",
-          "sizes": "512x512",
-          "type": "image/png"
-        }
-      ]
-    };
+<audio id="marioFX" preload="auto">
+  <source src="data:audio/mp3;base64,SUQzBAAAAAAAIVRJVDIAAAAPAABJdCdzLWEgbWUsIE1hcmlvIQ==" type="audio/mp3" />
+</audio>
 
-    const manifestBlob = new Blob([JSON.stringify(manifestContent)], {type: 'application/json'});
-    const manifestURL = URL.createObjectURL(manifestBlob);
-    const link = document.createElement('link');
-    link.rel = 'manifest';
-    link.href = manifestURL;
-    document.head.appendChild(link);
-
-    // Sound FX and UI logic
-    const btn = document.getElementById("soundBtn");
-    const audio = document.getElementById("marioFX");
-    const pitchToggle = document.getElementById("pitchToggle");
-    const pitchSlider = document.getElementById("pitchSlider");
-
-    pitchToggle.addEventListener('change', () => {
-      pitchSlider.disabled = !pitchToggle.checked;
-    });
-
-    btn.addEventListener("click", () => {
-      audio.playbackRate = pitchToggle.checked ? parseFloat(pitchSlider.value) : 1;
-      audio.currentTime = 0;
-      audio.play();
-    });
-
-    // Register Service Worker only once
-    if ('serviceWorker' in navigator) {
-      const swBlob = new Blob([`
-        self.addEventListener('install', event => {
-          event.waitUntil(
-            caches.open('mario-cache-v1').then(cache => {
-              return cache.addAll(['./']);
-            })
-          );
-          self.skipWaiting();
-        });
-
-        self.addEventListener('fetch', event => {
-          event.respondWith(
-            caches.match(event.request).then(response => {
-              return response || fetch(event.request);
-            })
-          );
-        });
-      `], { type: 'application/javascript' });
-
-      const swUrl = URL.createObjectURL(swBlob);
-      navigator.serviceWorker.register(swUrl).then(() => {
-        console.log('Service Worker registered!');
-      }).catch(err => {
-        console.error('SW registration failed:', err);
-      });
+<script>
+  // Helper to convert base64 icon data to Blob URL
+  function base64ToBlobUrl(base64, mime) {
+    const binary = atob(base64);
+    const array = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) {
+      array[i] = binary.charCodeAt(i);
     }
+    const blob = new Blob([array], { type: mime });
+    return URL.createObjectURL(blob);
+  }
 
-    // Optional: PWA install prompt event
-    let deferredPrompt;
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      deferredPrompt = e;
-      console.log('PWA install prompt is available.');
-      // You could add a button to call deferredPrompt.prompt() here
+  // Create Blob URL for the icon
+  const iconBase64 = "iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4";
+  const iconUrl = base64ToBlobUrl(iconBase64, "image/png");
+
+  // Create manifest blob and link it
+  const manifest = {
+    name: "Mario Sound FX",
+    short_name: "MarioFX",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#ffe600",
+    theme_color: "#e60012",
+    orientation: "portrait-primary",
+    icons: [
+      {
+        src: iconUrl,
+        sizes: "512x512",
+        type: "image/png"
+      }
+    ]
+  };
+  const manifestBlob = new Blob([JSON.stringify(manifest)], { type: "application/json" });
+  const manifestUrl = URL.createObjectURL(manifestBlob);
+  const link = document.createElement("link");
+  link.rel = "manifest";
+  link.href = manifestUrl;
+  document.head.appendChild(link);
+
+  // Sound FX + pitch slider logic
+  const btn = document.getElementById("soundBtn");
+  const audio = document.getElementById("marioFX");
+  const pitchToggle = document.getElementById("pitchToggle");
+  const pitchSlider = document.getElementById("pitchSlider");
+
+  pitchToggle.addEventListener("change", () => {
+    pitchSlider.disabled = !pitchToggle.checked;
+  });
+
+  btn.addEventListener("click", () => {
+    audio.playbackRate = pitchToggle.checked ? parseFloat(pitchSlider.value) : 1;
+    audio.currentTime = 0;
+    audio.play();
+  });
+
+  // Service Worker registration
+  if ("serviceWorker" in navigator) {
+    const swBlob = new Blob([`
+      self.addEventListener('install', event => {
+        event.waitUntil(
+          caches.open('mario-cache-v1').then(cache => cache.addAll(['./']))
+        );
+        self.skipWaiting();
+      });
+
+      self.addEventListener('fetch', event => {
+        event.respondWith(
+          caches.match(event.request).then(response => response || fetch(event.request))
+        );
+      });
+    `], { type: "application/javascript" });
+    const swUrl = URL.createObjectURL(swBlob);
+    navigator.serviceWorker.register(swUrl).then(() => {
+      console.log("Service Worker registered!");
+    }).catch(err => {
+      console.error("SW registration failed:", err);
     });
-  </script>
+  }
+
+  // Voice recording
+  const recordBtn = document.getElementById("recordBtn");
+  const stopBtn = document.getElementById("stopBtn");
+  const playBtn = document.getElementById("playBtn");
+  const recordStatus = document.getElementById("recordStatus");
+
+  let mediaRecorder;
+  let chunks = [];
+  let audioURL = "";
+  let audioPlayback = new Audio();
+
+  async function initMediaRecorder() {
+    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+      alert("Microphone not supported.");
+      return false;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+
+      mediaRecorder.onstart = () => {
+        chunks = [];
+        recordStatus.textContent = "Recording...";
+      };
+
+      mediaRecorder.ondataavailable = e => {
+        chunks.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(chunks, { type: "audio/webm" });
+        audioURL = URL.createObjectURL(blob);
+        audioPlayback.src = audioURL;
+        recordStatus.textContent = "Recording stopped.";
+        playBtn.disabled = false;
+      };
+
+      return true;
+    } catch (err) {
+      alert("Microphone access denied or error: " + err.message);
+      return false;
+    }
+  }
+
+  recordBtn.addEventListener("click", async () => {
+    if (!mediaRecorder) {
+      const ok = await initMediaRecorder();
+      if (!ok) return;
+    }
+    if (mediaRecorder.state === "inactive") {
+      mediaRecorder.start();
+      recordBtn.disabled = true;
+      stopBtn.disabled = false;
+      playBtn.disabled = true;
+    }
+  });
+
+  stopBtn.addEventListener("click", () => {
+    if (mediaRecorder && mediaRecorder.state === "recording") {
+      mediaRecorder.stop();
+      recordBtn.disabled = false;
+      stopBtn.disabled = true;
+    }
+  });
+
+  playBtn.addEventListener("click", () => {
+    if (audioPlayback.src) {
+      audioPlayback.play();
+    }
+  });
+
+  stopBtn.disabled = true;
+  playBtn.disabled = true;
+  recordStatus.textContent = "Not recording";
+</script>
 
 </body>
 </html>

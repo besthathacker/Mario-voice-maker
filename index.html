@@ -2,233 +2,164 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Mario Voice Changer</title>
-  <meta name="theme-color" content="#d62828" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mario Sound FX</title>
+  <meta name="theme-color" content="#e60012">
+
+  <!-- iOS PWA meta -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" />
+
+  <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4">
+
   <style>
+    @font-face {
+      font-family: 'PressStart2P';
+      src: url(data:font/woff2;base64,d09GMgABAAAAAAZgABAAAAAAB7wAAAWGAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAHEIGVgCDFAqDMIIcATYCJAMQCwoABCAFhG0HURvGUBwRCJEEZyTwOEdA6az/e3ce+7znnntMZVRZ9Q...) format('woff2');
+    }
+
     body {
-      font-family: 'Comic Sans MS', sans-serif;
-      background: radial-gradient(circle at top, #fcbf49, #d62828);
-      color: #fff;
-      text-align: center;
-      padding: 2em;
       margin: 0;
+      padding: 20px;
+      background: #ffe600;
+      font-family: 'PressStart2P', cursive;
+      text-align: center;
+      color: #e60012;
     }
+
     h1 {
-      font-size: 2.5em;
-      text-shadow: 3px 3px 0 #000;
-      animation: bounce 1.5s infinite;
+      font-size: 24px;
     }
-    @keyframes bounce {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
+
     button {
-      padding: 15px 30px;
-      font-size: 1.1em;
-      background-color: #f77f00;
-      color: white;
+      padding: 15px 25px;
+      font-size: 14px;
+      font-family: 'PressStart2P', cursive;
+      background-color: #ff1e00;
+      color: #fff;
       border: none;
-      border-radius: 12px;
-      margin: 1em;
+      border-radius: 8px;
       cursor: pointer;
-      transition: transform 0.2s ease;
+      margin-top: 20px;
     }
+
     button:hover {
-      background-color: #d62828;
-      transform: scale(1.1);
+      background-color: #cc1600;
     }
-    audio, label, input[type=range] {
-      margin-top: 1em;
+
+    .toggle {
       display: block;
-      margin-left: auto;
-      margin-right: auto;
+      margin-top: 20px;
+      font-size: 12px;
     }
-    #sliderContainer {
-      display: none;
-      margin: 1em auto;
-      width: 300px;
+
+    input[type=range] {
+      width: 200px;
     }
-    .switch {
-      display: inline-block;
-      position: relative;
-      width: 60px;
-      height: 34px;
-    }
-    .switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0;
-      right: 0; bottom: 0;
-      background-color: #ccc;
-      transition: 0.4s;
-      border-radius: 34px;
-    }
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 26px; width: 26px;
-      left: 4px; bottom: 4px;
-      background-color: white;
-      transition: 0.4s;
-      border-radius: 50%;
-    }
-    input:checked + .slider {
-      background-color: #2196F3;
-    }
-    input:checked + .slider:before {
-      transform: translateX(26px);
+
+    img.icon {
+      width: 100px;
+      margin-top: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>🎙 It's-a Me, Mario!</h1>
-  <p>Record your voice and give it a Mario twist!</p>
 
-  <label class="switch">
-    <input type="checkbox" id="pitchToggle" onchange="togglePitchSlider()" />
-    <span class="slider"></span>
+  <h1>Mario Sound FX</h1>
+  <img class="icon" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4" alt="Mario Icon">
+  <br>
+  <button id="soundBtn">🔊 Play Mario Sound</button>
+
+  <label class="toggle">
+    <input type="checkbox" id="pitchToggle"> Enable Pitch Slider
   </label>
-  <p>Enable Pitch Control</p>
+  <input type="range" id="pitchSlider" min="0.5" max="2.0" step="0.1" value="1" disabled>
 
-  <div id="sliderContainer">
-    <label for="pitchSlider">Pitch Shift: <span id="pitchValue">1.8</span>x</label>
-    <input
-      type="range"
-      id="pitchSlider"
-      min="0.5"
-      max="3.0"
-      step="0.1"
-      value="1.8"
-    />
-  </div>
+  <audio id="marioFX" preload="auto">
+    <source src="data:audio/mp3;base64,SUQzBAAAAAAAIVRJVDIAAAAPAABJdCdzLWEgbWUsIE1hcmlvIQ==" type="audio/mp3">
+  </audio>
 
-  <button onclick="startMarioRecording()">🎤 Start Recording</button>
-  <button onclick="stopRecording()" id="stopBtn" disabled>🛑 Stop</button>
-  <br />
-  <audio id="playback" controls></audio>
-  <br />
-  <a id="downloadLink" style="display:none;" download="mario_voice.mp3"
-    ><button>⬇️ Download MP3</button></a
-  >
-
-  <script src="https://unpkg.com/soundtouchjs"></script>
-  <script src="https://unpkg.com/lamejs/lame.min.js"></script>
   <script>
-    let audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    let mediaStream, mediaRecorder, recordedChunks = [];
-    let processor;
-    let pitchShift = 1.8;
-
-    function togglePitchSlider() {
-      const isEnabled = document.getElementById("pitchToggle").checked;
-      document.getElementById("sliderContainer").style.display = isEnabled
-        ? "block"
-        : "none";
-    }
-
-    document
-      .getElementById("pitchSlider")
-      .addEventListener("input", function () {
-        pitchShift = parseFloat(this.value);
-        document.getElementById("pitchValue").textContent = pitchShift.toFixed(1);
-      });
-
-    async function startMarioRecording() {
-      mediaStream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      const source = audioContext.createMediaStreamSource(mediaStream);
-
-      processor = audioContext.createScriptProcessor(4096, 1, 1);
-      const soundTouch = new soundtouch.SoundTouch(audioContext.sampleRate);
-      soundTouch.pitch = pitchShift;
-
-      const filter = new soundtouch.SimpleFilter(
-        new soundtouch.WebAudioBufferSource(source),
-        soundTouch
-      );
-
-      processor.onaudioprocess = function (e) {
-        const output = e.outputBuffer.getChannelData(0);
-        const input = new Float32Array(4096);
-        const filled = filter.extract(input, 4096);
-        for (let i = 0; i < filled; i++) output[i] = input[i];
-      };
-
-      source.connect(processor);
-      processor.connect(audioContext.destination);
-
-      const dest = audioContext.createMediaStreamDestination();
-      processor.connect(dest);
-
-      mediaRecorder = new MediaRecorder(dest.stream);
-      recordedChunks = [];
-
-      mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) recordedChunks.push(e.data);
-      };
-
-      mediaRecorder.onstop = async () => {
-        const blob = new Blob(recordedChunks, { type: "audio/webm" });
-        const arrayBuffer = await blob.arrayBuffer();
-        const audioBuffer = await audioContext.decodeAudioData(arrayBuffer);
-        const mp3Blob = encodeMp3(audioBuffer);
-        const url = URL.createObjectURL(mp3Blob);
-
-        const audioElem = document.getElementById("playback");
-        audioElem.src = url;
-
-        const downloadLink = document.getElementById("downloadLink");
-        downloadLink.href = url;
-        downloadLink.style.display = "inline-block";
-      };
-
-      mediaRecorder.start();
-      document.getElementById("stopBtn").disabled = false;
-    }
-
-    function stopRecording() {
-      if (mediaRecorder && mediaRecorder.state === "recording") {
-        mediaRecorder.stop();
-        processor.disconnect();
-        mediaStream.getTracks().forEach((track) => track.stop());
-        document.getElementById("stopBtn").disabled = true;
-      }
-    }
-
-    function encodeMp3(audioBuffer) {
-      const mp3encoder = new lamejs.Mp3Encoder(
-        audioBuffer.numberOfChannels,
-        audioBuffer.sampleRate,
-        128
-      );
-      const samples = audioBuffer.getChannelData(0);
-      const mp3Data = [];
-      const sampleBlockSize = 1152;
-      let sampleIndex = 0;
-
-      while (sampleIndex < samples.length) {
-        const sampleChunk = samples.subarray(sampleIndex, sampleIndex + sampleBlockSize);
-        // Convert float samples to 16-bit PCM
-        const buffer = new Int16Array(sampleChunk.length);
-        for (let i = 0; i < sampleChunk.length; i++) {
-          let s = Math.max(-1, Math.min(1, sampleChunk[i]));
-          buffer[i] = s < 0 ? s * 0x8000 : s * 0x7fff;
+    // Create and link manifest.json as a Blob URL
+    const manifestContent = {
+      "name": "Mario Sound FX",
+      "short_name": "MarioFX",
+      "start_url": "./",
+      "display": "standalone",
+      "background_color": "#ffe600",
+      "theme_color": "#e60012",
+      "orientation": "portrait-primary",
+      "icons": [
+        {
+          "src": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABAAAAAQACAYAAAB/HSuDAAEAAElEQVR4nGS9aYIkSY+zB9Lru7xupXvoJJp0Uj/wgB496pl+uyozwhczLiC4WP1f//f/o91VqbRalaS3Sr2jXamrtbtSr6RWzWhLKolP889KKl9Htdot7fpz+VipJI12uVuXdlbylTVd6pFWo83PxLNV6dFqRtpaVUs7UkvautvzXPm3VBruW/z/au59v89XSRr/bVvSfs+1Go2a7xe/W221akc8hWrzxH6QVat2ubifT1qpS7urUalb0vwu1He9nVLVSi3V+jm0ra1lz1qPVm/59776qnZ5p5K2pRo/89PSrHqlqZH08P7rRZAXYoudZYGyj1sWA6/3qqZ9+V3vZ3kjaqVpXmkQltpvY9gvi4qfr0raWb6LwEypa7W3U/qel/1aL6pqStX+7PLQq9Kj1mS9mufPOm/f3mfVtbyHRrWPt4",
+          "sizes": "512x512",
+          "type": "image/png"
         }
-        const mp3buf = mp3encoder.encodeBuffer(buffer);
-        if (mp3buf.length > 0) mp3Data.push(mp3buf);
-        sampleIndex += sampleBlockSize;
-      }
+      ]
+    };
 
-      const mp3buf = mp3encoder.flush();
-      if (mp3buf.length > 0) mp3Data.push(mp3buf);
+    const manifestBlob = new Blob([JSON.stringify(manifestContent)], {type: 'application/json'});
+    const manifestURL = URL.createObjectURL(manifestBlob);
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = manifestURL;
+    document.head.appendChild(link);
 
-      return new Blob(mp3Data, { type: "audio/mp3" });
+    // Sound FX and UI logic
+    const btn = document.getElementById("soundBtn");
+    const audio = document.getElementById("marioFX");
+    const pitchToggle = document.getElementById("pitchToggle");
+    const pitchSlider = document.getElementById("pitchSlider");
+
+    pitchToggle.addEventListener('change', () => {
+      pitchSlider.disabled = !pitchToggle.checked;
+    });
+
+    btn.addEventListener("click", () => {
+      audio.playbackRate = pitchToggle.checked ? parseFloat(pitchSlider.value) : 1;
+      audio.currentTime = 0;
+      audio.play();
+    });
+
+    // Register Service Worker only once
+    if ('serviceWorker' in navigator) {
+      const swBlob = new Blob([`
+        self.addEventListener('install', event => {
+          event.waitUntil(
+            caches.open('mario-cache-v1').then(cache => {
+              return cache.addAll(['./']);
+            })
+          );
+          self.skipWaiting();
+        });
+
+        self.addEventListener('fetch', event => {
+          event.respondWith(
+            caches.match(event.request).then(response => {
+              return response || fetch(event.request);
+            })
+          );
+        });
+      `], { type: 'application/javascript' });
+
+      const swUrl = URL.createObjectURL(swBlob);
+      navigator.serviceWorker.register(swUrl).then(() => {
+        console.log('Service Worker registered!');
+      }).catch(err => {
+        console.error('SW registration failed:', err);
+      });
     }
+
+    // Optional: PWA install prompt event
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      console.log('PWA install prompt is available.');
+      // You could add a button to call deferredPrompt.prompt() here
+    });
   </script>
+
 </body>
 </html>
